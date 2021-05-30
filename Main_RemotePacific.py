@@ -10,11 +10,11 @@ import matplotlib.pyplot as plt #Imports math and graph library
 import pandas as pd  #Imports time seres handling library
 # Libreria para Serie de datos indexa fechas, genera estadisticos rapidos .. etc
 import info_RemotePacific  #Import key settings for the following graphs and data
-# Libreria creada para definir las rutas y los string de los Modelos
+# Libreria creada para definir las rutas, string y graficos de los Modelos
 from info_RemotePacific import FHISTOG
 from info_RemotePacific import FScatter
 from info_RemotePacific import boxplot_ENSO
-
+from info_RemotePacific import ENSO_mei
 import numpy as np  
 
 
@@ -82,6 +82,8 @@ for i,j in zip(indice_name,name):
     
 from __toolsTrend import *
 
+# reading new data
+
 mod_rap = pd.read_csv('Data 2021/rapanui.txt')
 mod_rap = mod_rap.set_index(pd.to_datetime(mod_rap['Unnamed: 0']))
 mod_rap = mod_rap['md']
@@ -89,12 +91,15 @@ mod_rap = mod_rap['md']
 mod_samoa = pd.read_csv('Data 2021/samoa.txt')
 mod_samoa = mod_samoa.set_index(pd.to_datetime(mod_samoa['Unnamed: 0']))
 mod_samoa = mod_samoa['md']
-    
+
+# Lamsal trend test 
+
 print('Trend Obs in RapaNui is:')
 print(lamsal_trend(obs_CO.RAP.interpolate(method='spline', order=2).loc['1994':'2014'])[1]*10*12)
 print('Trend Model in RapaNui is:')
 print(lamsal_trend(mod_rap.loc['1994':'2014'])[1]*10*12)
 
+# Mann kendall test
 
 import pymannkendall as mk
 
@@ -104,6 +109,7 @@ result2 = mk.original_test(obs_CO.SMO.interpolate(method='spline', order=2).loc[
 print('MK test model Samoa :' + str(result))
 print('MK test Obs Samoa :' + str(result2))
 
+# Functions for plot lamsal
 
 def plot_trend_obs(obs= obs_CO.RAP,sc= 'Observation',zone = 'Rapa Nui'):
     
@@ -159,7 +165,8 @@ def plot_trend_mod(obs= obs_CO.RAP,sc= 'Model',zone = 'Rapa Nui'):
     ax[0].legend(fontsize=28,loc=1) , ax[1].legend(fontsize=28,loc=1) , ax[2].legend(fontsize=28,loc=1)
     ax[0].set_title(zone  + '( '+sc+')',fontsize=34,fontweight='bold')
 
-
+    
+# Lamsal trend plot
 plot_trend_obs(obs_CO.RAP,sc= 'Observation',zone = 'Rapa Nui (27.16S,109.4W)')
 plt.savefig('obs_trend_rap.png',dpi=600)
 plot_trend_mod(mod_rap,sc= 'Model',zone = 'Rapa Nui (27.16S,109.4W)' )
